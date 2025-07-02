@@ -22,6 +22,11 @@ django-debug-toolbar
 -e ./modules/connectors/usps
 -e ./modules/connectors/usps_international
 
+# custom module
+-e ./modules/connectors/logistic_io
+-e ./modules/connectors/aymakan
+-e ./modules/connectors/jtexpress
+
 # karrio server modules
 -e ./modules/core
 -e ./apps/api

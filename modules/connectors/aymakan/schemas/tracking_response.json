@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "data": {
+    "shipments": [
+      {
+        "reference": "123",
+        "tracking_number": "206360",
+        "customer_tracking": null,
+        "customer_name": "اختباري حساب",
+        "requested_by": "Test",
+        "cod_amount": "1.00",
+        "declared_value": null,
+        "declared_value_currency": null,
+        "currency": "SAR",
+        "delivery_name": "Aymakan",
+        "delivery_email": null,
+        "delivery_city": "Jeddah",
+        "delivery_address": "Malaz",
+        "delivery_region": null,
+        "delivery_postcode": null,
+        "delivery_country": "SA",
+        "delivery_phone": "23234234",
+        "delivery_description": null,
+        "collection_name": "Aymakan",
+        "collection_email": null,
+        "collection_city": "Riyadh",
+        "collection_address": null,
+        "collection_region": null,
+        "collection_postcode": null,
+        "collection_country": "SA",
+        "collection_phone": "23423423",
+        "collection_description": null,
+        "submission_date": "2018-09-16 10:39:45",
+        "pickup_date": "2018-09-16T07:39:45.000000Z",
+        "received_at": null,
+        "delivery_date": "2018-09-16T07:39:45.000000Z",
+        "weight": "1.00",
+        "pieces": 1,
+        "items_count": 1,
+        "status": "Received at Warehouse",
+        "status_label": "Received at Warehouse",
+        "reason_en": null,
+        "reason_ar": null,
+        "created_at": "2018-09-16T07:39:45.000000Z",
+        "id_customer": 2,
+        "is_reverse_pickup": 0,
+        "tracking_info": [
+          {
+            "status_code": "AY-0003",
+            "description": "Shipment is received at Riyadh hub",
+            "description_ar": "أستلمت الشحنة في مركز الرياض لأعادة التوزيع ",
+            "created_at": "2019-01-23 20:25:16"
+          },
+          {
+            "status_code": "AY-0002",
+            "description": "Shipment was collected from collection point ",
+            "description_ar": "تم إستلام الشحنة من الشركة الشاحنة ",
+            "created_at": "2019-01-23 20:24:15"
+          },
+          {
+            "status_code": "AY-0001",
+            "description": "Shipping Created",
+            "description_ar": null,
+            "created_at": "2018-09-16 10:39:45"
+          }
+        ]
+      }
+    ]
+  }
+}

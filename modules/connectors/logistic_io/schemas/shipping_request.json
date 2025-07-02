@@ -1,0 +1,71 @@
+{
+  "additional": {
+    "delivery_type": "FORWARD",
+    "async": true,
+    "label": true,
+    "order_date": "2022-06-09T22:29:41",
+    "vendor_code": "ADDR12182_1467",
+    "duty_fee_paid_by": "",
+    "rvp_reason": null
+  },
+  "pickup_info": {
+    "landmark": null,
+    "state": "Muharraq Island",
+    "address": "address ",
+    "country_code": "BH",
+    "time": "2022-06-15T12:51:18",
+    "name": "Khalid",
+    "phone": "8001111090",
+    "phone_code": "+966",
+    "email": "hello.ksa@shop.com",
+    "city": "Muharraq",
+    "postal_code": "Busaiteen"
+  },
+  "drop_info": {
+    "email": "new2009mom@hotmail.com",
+    "name": "Abrar Alkadhim",
+    "landmark": "",
+    "address": "10c 3633",
+    "city": "Muharraq",
+    "state": "Muharraq Island",
+    "country_code": "BH",
+    "postal_code": "Busaiteen",
+    "phone": "542144333",
+    "phone_code": "+966"
+  },
+  "return_info": {
+    "landmark": null,
+    "state": "Muharraq Island",
+    "address": "address",
+    "country_code": "BH",
+    "time": null,
+    "name": " eالحر رغد gf",
+    "phone": "8001111090",
+    "phone_code": "+966",
+    "email": "mohammed.asif@test.com",
+    "city": "Muharraq",
+    "postal_code": "Busaiteen"
+  },
+  "tax_info": null,
+  "shipment_details": {
+    "weight": "10",
+    "breadth": "10",
+    "height": "10",
+    "length": "10",
+    "invoice_value": "400",
+    "cod_value": "20",
+    "order_type": "COD",
+    "invoice_number": "3003373690",
+    "invoice_date": "2022-06-07",
+    "reference_number": "LogistiqTest_0004",
+    "currency_code": "SAR",
+    "items": [
+      {
+        "sku": "700202510203",
+        "description": " uSالفسات v سسواراتxالاw ",
+        "quantity": "1.0000",
+        "price": "44.3500"
+      }
+    ]
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "error": true,
+  "message": "No shipments found",
+  "errors": {
+    "price_set": [
+      "The price set field is required."
+    ],
+    "declared_value": [
+      "The declared value field is required."
+    ]
+  },
+  "response": "Invalid Credentials"
+}

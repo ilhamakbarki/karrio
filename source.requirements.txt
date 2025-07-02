@@ -127,3 +127,6 @@ whitenoise==6.9.0
 xmltodict==0.14.2
 zopfli==0.2.3.post1
 
+karrio_logistic_io @ file://${PWD}/modules/connectors/logistic_io
+karrio_aymakan @ file://${PWD}/modules/connectors/aymakan
+karrio_jtexpress @ file://${PWD}/modules/connectors/jtexpress

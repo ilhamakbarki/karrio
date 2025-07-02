@@ -1,0 +1,44 @@
+{
+  "status": true,
+  "data": [
+    {
+      "referance_awb": "174600040595623",
+      "cp_awb": "DEMOSASAF000014943",
+      "is_mps": true,
+      "box_count": null,
+      "allocated_courier_partner": "Logistiqcp",
+      "customer_details": {
+        "name": "الاء حمزة",
+        "phone": "551151067",
+        "address": "شارع الأمير محمد بن سلمان بن عبدالعزيز، الحي النفل ،, Vila,, الرياض, السعودية",
+        "city": "Riyadh",
+        "state": "Riyadh",
+        "country": "SA",
+        "postal_code": "Riyadh"
+      },
+      "order_details": {
+        "brand_reference_number": "HA_30042025_07",
+        "created_date": "2025-04-30T08:06:46.102207Z",
+        "delivery_date": null,
+        "current-stage": {
+          "stage": "BOOKED",
+          "date": "2025-04-30T08:06:46.182722Z",
+          "alpha_status_code": 101
+        }
+      },
+      "tracking_history": {
+        "updates": [
+          {
+            "status": "BOOKED",
+            "alpha_status_code": 101,
+            "date": "2025-04-30T08:06:46.182722Z",
+            "created_date": "2025-04-30T08:06:46.102207Z",
+            "scanned_location": null,
+            "status_remark": null,
+            "additional_remark": null
+          }
+        ]
+      }
+    }
+  ]
+}
