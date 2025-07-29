@@ -3,8 +3,8 @@ pipeline {
     environment {
         DOCKER_IMAGE_BE = "otokarrio.api"
         DOCKER_IMAGE_FE = "otokarrio.dashboard"
-        COMPOSE_FILE_BE = "/home/ubuntu/apps/chatwoot/docker-compose.socialbot.yaml"
-        COMPOSE_FILE_FE = "/home/ubuntu/apps/chatwoot/docker-compose.socialbot.yaml"
+        COMPOSE_FILE_BE = "/home/ubuntu/apps/oto/karrio-backend/docker-compose.yaml"
+        COMPOSE_FILE_FE = "/home/ubuntu/apps/oto/karrio-frontend/docker-compose.yaml"
         REGISTRY_HOST = credentials("DOCKER_REGISTRY_HOST")
         REGISTRY_USER = "DOCKER_REGISTRY_USER"
         STAGING_HOST = credentials('HOST_STAGING')
@@ -20,30 +20,38 @@ pipeline {
             when { branch 'staging_beta_*' }
             steps {
                 script {
+                    checkout scm: [
+                        $class: 'GitSCM',
+                        branches: scm.branches,
+                        doNotStripRemotePrefix: true,
+                        userRemoteConfigs: scm.userRemoteConfigs
+                    ]
+                    echo "Main repository checked out. Now cloning specific submodule 'community'..."
+                    sh 'git submodule update --init -- "community"'
                     def currentBranch = env.BRANCH_NAME
-                    def DOCKER_TARGET_IMAGE
+                    def DOCKER_TARGET_IMAGE = currentBranch.contains('staging_beta_fe') ? DOCKER_IMAGE_FE : DOCKER_IMAGE_BE
+                    def imageLatest = "${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:staging_beta-latest"
+                    def imageBuildNumber = "${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:staging_beta-${BUILD_NUMBER}"
                     if (currentBranch.contains('staging_beta_fe')) {
-                        DOCKER_TARGET_IMAGE = DOCKER_IMAGE_FE
                         echo "Start Build Image ${DOCKER_TARGET_IMAGE} Staging"
-                        sh "docker build -t ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:staging_beta-latest -f docker/dashboard/Dockerfile.oto ."
+                        sh "docker build -t ${imageLatest} -f docker/dashboard/Dockerfile.oto ."
                     } else if (currentBranch.contains('staging_beta_be')) {
-                        DOCKER_TARGET_IMAGE = DOCKER_IMAGE_BE
                         echo "Start Build Image ${DOCKER_TARGET_IMAGE} Staging"
-                        sh "docker build -t ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:staging_beta-latest -f docker/api/Dockerfile.oto ."
+                        sh "docker build -t ${imageLatest} -f docker/api/Dockerfile.oto ."
                     } else {
                         error "Unsupported branch name for staging build: ${currentBranch}. Expected 'staging_beta_fe' or 'staging_beta_be'."
                     }
 
                     echo 'Start Pushing Image'
                     docker.withRegistry('https://${REGISTRY_HOST}', REGISTRY_USER) {
-                        sh 'docker push ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:staging_beta-latest'
-                        sh 'docker tag ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:staging_beta-latest ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:staging_beta-${BUILD_NUMBER}'
-                        sh 'docker push ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:staging_beta-${BUILD_NUMBER}'
+                        sh "docker push ${imageLatest}"
+                        sh "docker tag ${imageLatest} ${imageBuildNumber}"
+                        sh "docker push ${imageBuildNumber}"
                     }
 
                     echo "Removing image after push"
-                    sh "docker rmi -f ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:staging_beta-latest"
-                    sh "docker rmi -f ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:staging_beta-${BUILD_NUMBER}"
+                    sh "docker rmi -f ${imageLatest}"
+                    sh "docker rmi -f ${imageBuildNumber}"
                 }
             }
         }
@@ -68,30 +76,38 @@ pipeline {
             when { tag "release-*" }
             steps {
                 script {
+                    checkout scm: [
+                        $class: 'GitSCM',
+                        branches: scm.branches,
+                        doNotStripRemotePrefix: true,
+                        userRemoteConfigs: scm.userRemoteConfigs
+                    ]
+                    echo "Main repository checked out. Now cloning specific submodule 'community'..."
+                    sh 'git submodule update --init -- "community"'
                     def currentTag = env.TAG_NAME
-                    def DOCKER_TARGET_IMAGE
+                    def DOCKER_TARGET_IMAGE = currentTag.contains('release-fe') ? DOCKER_IMAGE_FE : DOCKER_IMAGE_BE
+                    def imageLatest = "${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:release-latest"
+                    def imageBuildNumber = "${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:${TAG_NAME}-${BUILD_NUMBER}"
                     if (currentTag.contains('release-fe')) {
-                        DOCKER_TARGET_IMAGE = DOCKER_IMAGE_FE
                         echo "Start Build Image ${DOCKER_TARGET_IMAGE} Production"
-                        sh "docker build -t ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:release-latest -f docker/dashboard/Dockerfile.oto ."
+                        sh "docker build -t ${imageLatest} -f docker/dashboard/Dockerfile.oto ."
                     } else if (currentTag.contains('release-be')) {
-                        DOCKER_TARGET_IMAGE = DOCKER_IMAGE_BE
                         echo "Start Build Image ${DOCKER_TARGET_IMAGE} Production"
-                        sh "docker build -t ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:release-latest -f docker/api/Dockerfile.oto ."
+                        sh "docker build -t ${imageLatest} -f docker/api/Dockerfile.oto ."
                     }else {
                         error "Unsupported release build: ${currentTag}. Expected 'release-be-*' or 'release-fe-*'."
                     }
 
                     echo 'Start Pushing Image'
                     docker.withRegistry('https://${REGISTRY_HOST}', REGISTRY_USER) {
-                        sh 'docker push ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:release-latest'
-                        sh 'docker tag ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:release-latest ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:${TAG_NAME}-${BUILD_NUMBER}'
-                        sh 'docker push ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:${TAG_NAME}-${BUILD_NUMBER}'
+                        sh "docker push ${imageLatest}"
+                        sh "docker tag ${imageLatest} ${imageBuildNumber}"
+                        sh "docker push ${imageBuildNumber}"
                     }
 
                     echo "Removing image after push"
-                    sh "docker rmi -f ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:release-latest"
-                    sh "docker rmi -f ${REGISTRY_HOST}/${DOCKER_TARGET_IMAGE}:${TAG_NAME}-${BUILD_NUMBER}"
+                    sh "docker rmi -f ${imageLatest}"
+                    sh "docker rmi -f ${imageBuildNumber}"
                 }
             }
         }
@@ -138,12 +154,12 @@ pipeline {
     post {
         success {
             script {
-                sendNotification("Success to deploy")
+                sendNotification("Success to deploy.")
             }
         }
         failure {
             script {
-                sendNotification("Failed to deploy")
+                sendNotification("Failed to deploy.")
             }
         }
     }
@@ -153,12 +169,17 @@ def sendNotification(message) {
     echo 'Sending Notification...'
     def tag = env.TAG_NAME ?: ''
     def branch = env.BRANCH_NAME ?: ''
+    def DOCKER_IMAGE = branch.contains('staging_beta_fe') || tag.contains('release-fe') ? DOCKER_IMAGE_FE : DOCKER_IMAGE_BE
+    def NAME = env.TAG_NAME ?: env.BRANCH_NAME
+    def cleanJobPath = env.JOB_NAME.replaceFirst('^/job', '').replaceAll('/$', '')
+    def formattedJobPath = cleanJobPath.split('/').collect { "job/${it}" }.join('/')
+    def link = "${env.JENKINS_URL}${formattedJobPath}/${env.BUILD_NUMBER}/console"
     sh """
         curl --location 'https://webhooks.socialbot.dev/webhook/jenkins-deploy' \\
             --header 'Content-Type: application/json' \\
             --header 'x-api-key: ${NOTIF_API_KEY}' \\
             --data '{
-                "message": "${message}",
+                "message": "${message} Link : ${link}",
                 "service": "${DOCKER_IMAGE}",
                 "branch": "${branch}",
                 "tag": "${tag}"

@@ -19,7 +19,6 @@ karrio-easyship @ file://${PWD}/community/plugins/easyship
 karrio-eshipper @ file://${PWD}/community/plugins/eshipper
 karrio-freightcom @ file://${PWD}/community/plugins/freightcom
 karrio-geodis @ file://${PWD}/community/plugins/geodis
-karrio-googlegeocoding @ file://${PWD}/community/plugins/googlegeocoding
 karrio-hay_post @ file://${PWD}/community/plugins/hay_post
 karrio-jtexpress @ file://${PWD}/community/plugins/jtexpress
 karrio-locate2u @ file://${PWD}/community/plugins/locate2u
