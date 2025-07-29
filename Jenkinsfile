@@ -126,9 +126,9 @@ pipeline {
         stage('Deploy on Production') {
             when { tag "release-*" }
             steps {
-                def CONFIG_PROD_AWS = env.TAG_NAME.contains('release-fe') ? CONFIG_FE_PROD_AWS : CONFIG_BE_PROD_AWS
                 echo 'Starting Deploy on Production'
                 script {
+                    def CONFIG_PROD_AWS = env.TAG_NAME.contains('release-fe') ? CONFIG_FE_PROD_AWS : CONFIG_BE_PROD_AWS
                     sh '${AWS_SCRIPT} ${CONFIG_PROD_AWS}'
                 }
             }
