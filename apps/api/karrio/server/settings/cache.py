@@ -10,6 +10,7 @@ REDIS_PORT = config("REDIS_PORT", default=None)
 REDIS_PASSWORD = config("REDIS_PASSWORD", default=None)
 REDIS_USERNAME = config("REDIS_USERNAME", default="default")
 REDIS_PREFIX = config("REDIS_PREFIX", default="karrio")
+REDIS_DB = config("REDIS_DB", default="1")
 
 # karrio server caching setup
 if REDIS_HOST is not None:
@@ -17,7 +18,7 @@ if REDIS_HOST is not None:
     INSTALLED_APPS += ["health_check.contrib.redis"]
     REDIS_AUTH = f"{REDIS_USERNAME}:{REDIS_PASSWORD}@" if REDIS_PASSWORD else ""
 
-    REDIS_CONNECTION_URL = f'redis://{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT or "6379"}/1'
+    REDIS_CONNECTION_URL = f'redis://{REDIS_AUTH}{REDIS_HOST}:{REDIS_PORT or "6379"}/{REDIS_DB}'
     CACHES = {
         "default": {
             "BACKEND": "django_redis.cache.RedisCache",

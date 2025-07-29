@@ -20,6 +20,7 @@ REDIS_HOST = decouple.config("REDIS_HOST", default=None)
 REDIS_PORT = decouple.config("REDIS_PORT", default=None)
 REDIS_PASSWORD = decouple.config("REDIS_PASSWORD", default=None)
 REDIS_USERNAME = decouple.config("REDIS_USERNAME", default="default")
+REDIS_DB = decouple.config("REDIS_DB", default="1")
 
 
 # Use redis if available
@@ -30,6 +31,7 @@ if REDIS_HOST is not None:
         max_connections=20,
         **({"password": REDIS_PASSWORD} if REDIS_PASSWORD else {}),
         **({"username": REDIS_USERNAME} if REDIS_USERNAME else {}),
+        db=REDIS_DB,
     )
     HUEY = huey.RedisHuey(
         "default",
