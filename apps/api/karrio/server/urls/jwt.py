@@ -1,11 +1,19 @@
 from django.urls import path
 from django.contrib.auth import get_user_model
 from django.utils.translation import gettext_lazy as _
-from rest_framework import serializers, exceptions
+from rest_framework import serializers, exceptions, status
+from rest_framework.views import APIView
+from rest_framework.response import Response
 from rest_framework_simplejwt import views as jwt_views, serializers as jwt
 from two_factor.utils import default_device
-
+from karrio.server.conf import settings
+import karrio.server.user.forms as user_forms
+import logging
 import karrio.server.openapi as openapi
+
+logger = logging.getLogger(__name__)
+
+
 
 ENDPOINT_ID = "&&"  # This endpoint id is used to make operation ids unique make sure not to duplicate
 User = get_user_model()
@@ -197,7 +205,23 @@ class VerifiedTokenPair(jwt_views.TokenVerifyView):
         return response
 
 
+class RegisterUserAPIView(APIView):
+    def post(self, request):
+        if settings.ALLOW_SIGNUP == False:
+            return Response({"message": "Signup is not allowed."}, status=status.HTTP_400_BAD_REQUEST)
+        try:
+            print(request.data)
+            form = user_forms.SignUpForm(data=request.data)
+            user = form.save()
+
+            return Response({"message": "User created"}, status=status.HTTP_200_OK)
+        except Exception as e:
+            logger.exception(e)
+            return Response({"message": "Something wont wrong"}, status=status.HTTP_400_BAD_REQUEST)
+
+
 urlpatterns = [
+    path("api/register", RegisterUserAPIView.as_view(), name="jwt-user-register"),
     path("api/token", TokenObtainPair.as_view(), name="jwt-obtain-pair"),
     path("api/token/refresh", TokenRefresh.as_view(), name="jwt-refresh"),
     path("api/token/verify", TokenVerify.as_view(), name="jwt-verify"),
