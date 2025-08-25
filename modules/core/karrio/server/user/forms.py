@@ -22,14 +22,16 @@ class SignUpForm(UserCreationForm):
                 "Signup is not allowed. "
                 "Please contact your administrator to create an account."
             )
-
+        
         user = super().save(commit=commit)
 
-        if commit and settings.EMAIL_ENABLED:
-            user.is_active = False
-            send_email(user, self.cleaned_data["redirect_url"])
+        # if commit and settings.EMAIL_ENABLED:
+        #     user.is_active = False
+        #     send_email(user, self.cleaned_data["redirect_url"])
 
-        if commit and settings.ALLOW_ADMIN_APPROVED_SIGNUP:
-            user.is_active = False
+        # if commit and settings.ALLOW_ADMIN_APPROVED_SIGNUP:
+        #     user.is_active = False
+
+        user.is_active = True
 
         return user
