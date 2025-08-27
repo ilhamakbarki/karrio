@@ -1,5 +1,18 @@
+# karrio server modules
+-e ./apps/api
+-e ./modules/core
+-e ./modules/data
+-e ./modules/documents
+-e ./modules/events
+-e ./modules/graph
+-e ./modules/manager
+-e ./modules/orders
+-e ./modules/pricing
+-e ./modules/proxy
+-e ./modules/sdk
+-e ./modules/soap
+
 # Custom Carrier
-karrio-server @ file://${PWD}/apps/api
 karrio-ajex @ file://${PWD}/community/plugins/ajex
 karrio-allied_express @ file://${PWD}/community/plugins/allied_express
 karrio-allied_express_local @ file://${PWD}/community/plugins/allied_express_local
