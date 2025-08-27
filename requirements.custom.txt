@@ -10,14 +10,8 @@ karrio-barqfleet @ file://${PWD}/community/plugins/barqfleet
 karrio-boxknight @ file://${PWD}/community/plugins/boxknight
 karrio-bpost @ file://${PWD}/community/plugins/bpost
 karrio-canpar @ file://${PWD}/community/plugins/canpar
-karrio-chronopost @ file://${PWD}/community/plugins/chronopost
 karrio-colissimo @ file://${PWD}/community/plugins/colissimo
 karrio-dicom @ file://${PWD}/community/plugins/dicom
-karrio-dpd @ file://${PWD}/community/plugins/dpd
-karrio-easypost @ file://${PWD}/community/plugins/easypost
-karrio-easyship @ file://${PWD}/community/plugins/easyship
-karrio-eshipper @ file://${PWD}/community/plugins/eshipper
-karrio-freightcom @ file://${PWD}/community/plugins/freightcom
 karrio-geodis @ file://${PWD}/community/plugins/geodis
 karrio-hay_post @ file://${PWD}/community/plugins/hay_post
 karrio-jtexpress @ file://${PWD}/community/plugins/jtexpress
@@ -27,7 +21,6 @@ karrio-mydhl @ file://${PWD}/community/plugins/mydhl
 karrio-nationex @ file://${PWD}/community/plugins/nationex
 karrio-roadie @ file://${PWD}/community/plugins/roadie
 karrio-royalmail @ file://${PWD}/community/plugins/royalmail
-karrio-sapient @ file://${PWD}/community/plugins/sapient
 karrio-sendcloud @ file://${PWD}/community/plugins/sendcloud
 karrio-shipengine @ file://${PWD}/community/plugins/shipengine
 karrio-tge @ file://${PWD}/community/plugins/tge
