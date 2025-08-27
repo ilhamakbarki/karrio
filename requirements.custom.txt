@@ -1,4 +1,5 @@
 # Custom Carrier
+karrio-server @ file://${PWD}/apps/api
 karrio-ajex @ file://${PWD}/community/plugins/ajex
 karrio-allied_express @ file://${PWD}/community/plugins/allied_express
 karrio-allied_express_local @ file://${PWD}/community/plugins/allied_express_local
