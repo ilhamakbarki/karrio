@@ -12,6 +12,7 @@ ENV PATH="/karrio/venv/bin:$PATH"
 COPY "${REQUIREMENTS}" /temp/
 COPY "requirements.custom.txt" /temp/
 COPY . /temp/app/
+COPY apps/api /karrio/apps/api
 RUN cd /temp/app && \
     pip install --upgrade pip && \
     pip install dumb-init && \
