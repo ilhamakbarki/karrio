@@ -9,7 +9,8 @@ RUN apt-get update -y && apt-get install -y gcc
 
 RUN python -m venv /karrio/venv
 ENV PATH="/karrio/venv/bin:$PATH"
-COPY apps/api /karrio/apps/api
+COPY apps/ /karrio/apps/
+COPY modules/ /karrio/modules/
 COPY "${REQUIREMENTS}" /temp/
 COPY "requirements.custom.txt" /temp/
 COPY . /temp/app/
@@ -52,7 +53,8 @@ COPY --chown=karrio:karrio --from=compile-image /karrio/ /karrio/
 RUN mkdir -p $WORK_DIR $LOG_DIR $WORKER_DB_DIR $STATIC_ROOT_DIR $KARRIO_PLUGINS
 COPY apps/api/gunicorn-cfg.py docker/api/entrypoint docker/api/worker $WORK_DIR/
 COPY --chown=karrio:karrio plugins/ $KARRIO_PLUGINS/
-COPY --chown=karrio:karrio apps/api /karrio/apps/api
+COPY --chown=karrio:karrio apps/ /karrio/apps/
+COPY --chown=karrio:karrio modules/ /karrio/modules/
 WORKDIR $WORK_DIR
 
 # Make sure we use the virtualenv:
