@@ -51,7 +51,6 @@ COPY --chown=karrio:karrio --from=compile-image /karrio/ /karrio/
 RUN mkdir -p $WORK_DIR $LOG_DIR $WORKER_DB_DIR $STATIC_ROOT_DIR $KARRIO_PLUGINS
 COPY apps/api/gunicorn-cfg.py docker/api/entrypoint docker/api/worker $WORK_DIR/
 COPY --chown=karrio:karrio plugins/ $KARRIO_PLUGINS/
-
 WORKDIR $WORK_DIR
 
 # Make sure we use the virtualenv:

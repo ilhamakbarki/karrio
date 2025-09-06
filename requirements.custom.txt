@@ -1,3 +1,15 @@
+# karrio server modules
+karrio-server @ file://${PWD}/apps/api
+karrio-server-core @ file://${PWD}/modules/core
+karrio-server-data @ file://${PWD}/modules/data
+karrio-server-documents @ file://${PWD}/modules/documents
+karrio-server-events @ file://${PWD}/modules/events
+karrio-server-graph @ file://${PWD}/modules/graph
+karrio-server-manager @ file://${PWD}/modules/manager
+karrio-server-orders @ file://${PWD}/modules/orders
+karrio-server-pricing @ file://${PWD}/modules/pricing
+karrio-server-proxy @ file://${PWD}/modules/proxy
+
 # Custom Carrier
 karrio-ajex @ file://${PWD}/community/plugins/ajex
 karrio-allied_express @ file://${PWD}/community/plugins/allied_express

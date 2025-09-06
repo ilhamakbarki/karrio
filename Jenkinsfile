@@ -1,22 +1,18 @@
 pipeline {
-    agent { label (env.BRANCH_NAME == 'staging_beta_be' || env.BRANCH_NAME == 'staging_beta_fe' ? 'agent-staging' : 'agent-production') }
+    agent {
+        kubernetes {
+          label 'kube-1'
+        }
+    }
     environment {
         DOCKER_IMAGE_BE = "otokarrio.api"
         DOCKER_IMAGE_FE = "otokarrio.dashboard"
-        COMPOSE_FILE_BE = "/home/ubuntu/apps/oto/karrio-backend/docker-compose.yaml"
-        COMPOSE_FILE_FE = "/home/ubuntu/apps/oto/karrio-frontend/docker-compose.yaml"
         REGISTRY_HOST = credentials("DOCKER_REGISTRY_HOST")
-        REGISTRY_USER = "DOCKER_REGISTRY_USER"
-        STAGING_HOST = credentials('HOST_STAGING')
-        STAGING_USER = "USER_SERVER_STAGING"
         APPROVAL = credentials("APPROVAL_RELEASE")
-        AWS_SCRIPT = credentials("AWS_AUTO_START_SCRIPT")
-        CONFIG_BE_PROD_AWS = credentials("KARRIO_API_PROD_AWS_CONFIG")
-        CONFIG_FE_PROD_AWS = credentials("KARRIO_FE_PROD_AWS_CONFIG")
         NOTIF_API_KEY = credentials('NOTIF_API_KEY')
     }
     stages {
-        stage('Build & Push Image Staging & Remove Image') {
+        stage('Build & Push Image Staging & Deploy to Staging') {
             when { branch 'staging_beta_*' }
             steps {
                 script {
@@ -43,15 +39,19 @@ pipeline {
                     }
 
                     echo 'Start Pushing Image'
-                    docker.withRegistry('https://${REGISTRY_HOST}', REGISTRY_USER) {
+                    docker.withRegistry("https://${REGISTRY_HOST}", "DOCKER_REGISTRY_USER") {
                         sh "docker push ${imageLatest}"
                         sh "docker tag ${imageLatest} ${imageBuildNumber}"
                         sh "docker push ${imageBuildNumber}"
                     }
 
-                    echo "Removing image after push"
-                    sh "docker rmi -f ${imageLatest}"
-                    sh "docker rmi -f ${imageBuildNumber}"
+                    echo "Start Deploy on Staging"
+                    if (currentBranch.contains('staging_beta_fe')) {
+                        sh "kubectl set image deployment karrio-fe-app karrio-fe-app=${imageBuildNumber} -n=karrio-fe-staging"
+                    } else {
+                        sh "kubectl set image deployment karrio-be-app karrio-be-app=${imageBuildNumber} -n=karrio-be-staging"
+                        sh "kubectl set image deployment karrio-be-worker karrio-be-worker=${imageBuildNumber} -n=karrio-be-staging"
+                    }
                 }
             }
         }
@@ -99,53 +99,19 @@ pipeline {
                     }
 
                     echo 'Start Pushing Image'
-                    docker.withRegistry('https://${REGISTRY_HOST}', REGISTRY_USER) {
+                    docker.withRegistry('https://${REGISTRY_HOST}', 'DOCKER_REGISTRY_USER') {
                         sh "docker push ${imageLatest}"
                         sh "docker tag ${imageLatest} ${imageBuildNumber}"
                         sh "docker push ${imageBuildNumber}"
                     }
 
-                    echo "Removing image after push"
-                    sh "docker rmi -f ${imageLatest}"
-                    sh "docker rmi -f ${imageBuildNumber}"
-                }
-            }
-        }
-        stage('Clean Up Docker Images & Cache') {
-            steps {
-                script {
-                    echo "Cleaning up Docker images and build cache"
-                    sh "docker image prune -f"
-                    sh "docker builder prune -f"
-                    echo "Clean up completed!"
-                }
-            }
-        }
-        stage('Deploy BE on Staging') {
-            when { branch 'staging_beta_*' }
-            steps {
-                echo 'Start Deploy on Staging'
-                script {
-                    sshagent(credentials: [STAGING_USER]) {
-                        def DOCKER_IMAGE = env.BRANCH_NAME.contains('staging_beta_fe') ? DOCKER_IMAGE_FE : DOCKER_IMAGE_BE
-                        def COMPOSE_FILE = env.BRANCH_NAME.contains('staging_beta_fe') ? COMPOSE_FILE_FE : COMPOSE_FILE_BE
-                        sh """
-                            ssh -o StrictHostKeyChecking=no ubuntu@${STAGING_HOST} '
-                            docker compose -f ${COMPOSE_FILE} pull ${DOCKER_IMAGE} &&
-                            docker compose -f ${COMPOSE_FILE} up -d &&
-                            docker image prune -f'
-                        """
+                    echo "Start Deploy on Production"
+                    if (currentBranch.contains('release-fe')) {
+                        sh "kubectl set image deployment karrio-fe-app karrio-fe-app=${imageBuildNumber} -n=karrio-fe-production"
+                    } else {
+                        sh "kubectl set image deployment karrio-be-app karrio-be-app=${imageBuildNumber} -n=karrio-be-production"
+                        sh "kubectl set image deployment karrio-be-worker karrio-be-worker=${imageBuildNumber} -n=karrio-be-production"
                     }
-                }
-            }
-        }
-        stage('Deploy on Production') {
-            when { tag "release-*" }
-            steps {
-                echo 'Starting Deploy on Production'
-                script {
-                    def CONFIG_PROD_AWS = env.TAG_NAME.contains('release-fe') ? CONFIG_FE_PROD_AWS : CONFIG_BE_PROD_AWS
-                    sh '${AWS_SCRIPT} ${CONFIG_PROD_AWS}'
                 }
             }
         }
